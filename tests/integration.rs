@@ -411,3 +411,13 @@ fn test_deleted_equation_stays_after_preceding_paragraph() {
         "deleted equation moved above the paragraph before it: {output}"
     );
 }
+
+#[test]
+fn test_deleted_equation_takes_no_number() {
+    let old = "#set math.equation(numbering: \"(1)\")\n\n$ y $\n\n$ z $ <eq-z>\n\nSee @eq-z.\n";
+    let new = "#set math.equation(numbering: \"(1)\")\n\n$ z $ <eq-z>\n\nSee @eq-z.\n";
+    let output = run_diff(old, new);
+
+    // Numbered, the deleted equation would push `@eq-z` from (1) to (2).
+    assert!(output.contains("#diff-deleted[#set math.equation(numbering: none)\n$ y $]"));
+}
