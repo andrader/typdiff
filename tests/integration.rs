@@ -405,7 +405,8 @@ fn test_deleted_equation_stays_after_preceding_paragraph() {
     let output = run_diff(old, new);
 
     let paragraph = output.find("#diff-added[here]").unwrap();
-    let equation = output.find("#diff-deleted[$ x = 1 $]").unwrap();
+    // With #49 the deleted equation carries `#set math.equation(numbering: none)`.
+    let equation = output.find("$ x = 1 $]").unwrap();
     assert!(
         paragraph < equation,
         "deleted equation moved above the paragraph before it: {output}"
