@@ -397,3 +397,17 @@ fn test_label_after_changed_equation_stays_on_equation() {
     assert!(output.contains("#diff-added[$ x = 2 $ <eq-main>]"));
     assert!(!output.contains("\n<eq-main>\n"));
 }
+
+#[test]
+fn test_deleted_equation_stays_after_preceding_paragraph() {
+    let old = "The model is defined below.\n\n$ x = 1 $\n";
+    let new = "The model is defined here.\n";
+    let output = run_diff(old, new);
+
+    let paragraph = output.find("#diff-added[here]").unwrap();
+    let equation = output.find("#diff-deleted[$ x = 1 $]").unwrap();
+    assert!(
+        paragraph < equation,
+        "deleted equation moved above the paragraph before it: {output}"
+    );
+}
